@@ -12,3 +12,26 @@ function addTask() {
         alert("Please enter a task!");
     }
 }
+
+
+
+
+
+
+
+
+
+
+function searchTasks() {
+    let filter = document.getElementById('searchInput').value.toLowerCase();
+    let li = document.getElementsByTagName('li');
+
+    for (let i = 0; i < li.length; i++) {
+        let text = li[i].innerText.toLowerCase();
+        if (text.includes(filter)) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+        }
+    }
+}
