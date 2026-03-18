@@ -1,40 +1,48 @@
- // Base Function: Adds a task to the list
+// Base Function: Adds a task to the list
 function addTask() {
     const input = document.getElementById('taskInput');
-    const priorityInput = document.getElementById('priorityInput'); // Grab the dropdown
+    const priorityInput = document.getElementById('priorityInput');
+    const dueDateInput = document.getElementById('dueDateInput');
     const list = document.getElementById('taskList');
+
     const taskValue = input.value.trim();
-    const priorityValue = priorityInput.value; 
-    
+    const priorityValue = priorityInput.value;
+    const dueDateValue = dueDateInput.value;
+
     if (taskValue !== "") {
         const li = document.createElement('li');
-        
-        // Determine which color class to use based on the selection
+
         let badgeClass = '';
         if (priorityValue === 'high') badgeClass = 'priority-high';
         else if (priorityValue === 'medium') badgeClass = 'priority-medium';
         else badgeClass = 'priority-low';
-        
-        // Add both the task text and the priority badge to the list item
+
         li.innerHTML = `
-            <span>${taskValue}</span> 
-            <span class="priority-badge ${badgeClass}">${priorityValue.charAt(0).toUpperCase() + priorityValue.slice(1)}</span>
+            <span class="task-text">${taskValue}</span>
+            <span class="priority-badge ${badgeClass}">
+                ${priorityValue.charAt(0).toUpperCase() + priorityValue.slice(1)}
+            </span>
+            <span class="due-date">
+                ${dueDateValue ? 'Due: ' + dueDateValue : ''}
+            </span>
         `;
-        
+
         list.appendChild(li);
-        
-        // Reset the inputs after adding
-        input.value = ""; 
-        priorityInput.value = "medium"; 
+
+        checkDueDates();
+
+        input.value = "";
+        priorityInput.value = "medium";
+        dueDateInput.value = "";
     } else {
         alert("Please enter a task!");
     }
 }
 
-// Your Personal Feature: Filters tasks as you type
+// Filters tasks as you type
 function searchTasks() {
     let filter = document.getElementById('searchInput').value.toLowerCase();
-    let li = document.getElementsByTagName('li');
+    let li = document.querySelectorAll('#taskList li');
 
     for (let i = 0; i < li.length; i++) {
         let text = li[i].innerText.toLowerCase();
@@ -49,8 +57,6 @@ function searchTasks() {
 function sortTasks() {
     const list = document.getElementById('taskList');
     const tasks = Array.from(list.getElementsByTagName('li'));
-    
-    // Grab the sorting direction chosen by the user
     const sortOrder = document.getElementById('sortOrder').value;
 
     tasks.sort((a, b) => {
@@ -58,21 +64,40 @@ function sortTasks() {
         const priorityB = b.querySelector('.priority-badge').innerText.toLowerCase();
 
         const weights = {
-            'high': 3,
-            'medium': 2,
-            'low': 1
+            high: 3,
+            medium: 2,
+            low: 1
         };
 
-        // If 'desc' (Highest First), subtract A from B
         if (sortOrder === 'desc') {
             return weights[priorityB] - weights[priorityA];
-        } 
-        // If 'asc' (Lowest First), subtract B from A
-        else {
+        } else {
             return weights[priorityA] - weights[priorityB];
         }
     });
 
-    // Re-append the sorted tasks back to the list
     tasks.forEach(task => list.appendChild(task));
 }
+
+function checkDueDates() {
+    const today = new Date().toISOString().split('T')[0];
+    const tasks = document.querySelectorAll('#taskList li');
+
+    tasks.forEach(task => {
+        const dueDateElement = task.querySelector('.due-date');
+
+        if (dueDateElement && dueDateElement.innerText.includes('Due:')) {
+            const dueDate = dueDateElement.innerText.replace('Due: ', '').trim();
+
+            if (dueDate < today) {
+                task.style.backgroundColor = '#ffcccc';
+            } else if (dueDate === today) {
+                task.style.backgroundColor = '#fff3cd';
+            } else {
+                task.style.backgroundColor = '#f8f9fa';
+            }
+        }
+    });
+}
+
+setInterval(checkDueDates, 60000);
