@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,28 +7,48 @@
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%); 
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             margin: 0;
         }
+
         .container { 
             background: white; 
             padding: 30px; 
             border-radius: 15px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-            width: 400px;
+            width: 500px;
         }
-        h2 { color: #4a4e69; text-align: center; }
-        .input-group { margin-bottom: 15px; display: flex; gap: 10px; }
-        input { 
-            flex: 1;
+
+        h2 { 
+            color: #4a4e69; 
+            text-align: center; 
+        }
+
+        .input-group { 
+            margin-bottom: 15px; 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap;
+        }
+
+        input, select { 
             padding: 10px; 
             border: 1px solid #ddd; 
             border-radius: 5px; 
         }
-        #searchInput { background-color: #f0fdfa; border: 1px solid #74ebd5; }
+
+        #taskInput, #searchInput {
+            flex: 1;
+        }
+
+        #searchInput { 
+            background-color: #f0fdfa; 
+            border: 1px solid #74ebd5; 
+        }
+
         button { 
             padding: 10px 15px; 
             background-color: #6c63ff; 
@@ -37,18 +57,30 @@
             border-radius: 5px; 
             cursor: pointer;
         }
-        button:hover { background-color: #5753d9; }
-        ul { list-style: none; padding: 0; }
+
+        button:hover { 
+            background-color: #5753d9; 
+        }
+
+        ul { 
+            list-style: none; 
+            padding: 0; 
+        }
+
         li { 
             background: #f8f9fa; 
             margin: 8px 0; 
             padding: 12px; 
             border-left: 5px solid #6c63ff; 
-            border-radius: 4px; 
-            color: #333;
-            display: flex; /* Aligns text and badge */
-            justify-content: space-between; 
+            border-radius: 6px; 
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
             align-items: center;
+        }
+
+        .task-text {
+            flex: 1;
         }
 
         .priority-badge {
@@ -58,11 +90,26 @@
             color: white;
             font-weight: bold;
         }
+
         .priority-high { background-color: #ff4d4d; }
         .priority-medium { background-color: #ffa502; }
         .priority-low { background-color: #2ed573; }
+
+        .due-date {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .overdue {
+            background-color: #ffcccc !important;
+        }
+
+        .due-today {
+            background-color: #fff3cd !important;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>ZCAS Smart Tasks</h2>
@@ -73,38 +120,126 @@
 
         <div class="input-group">
             <input type="text" id="taskInput" placeholder="Add a new task...">
-            <select id="priorityInput" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none;">
+
+            <select id="priorityInput">
                 <option value="high">High</option>
                 <option value="medium" selected>Medium</option>
                 <option value="low">Low</option>
             </select>
+
+            <input type="date" id="dueDateInput">
+
             <button onclick="addTask()">Add</button>
             
         </div>
-       
-        <div class="input-group" style="margin-top: 5px;">
-            <select id="sortOrder" style="border-radius: 5px;; border: 1px solid #ddd; border-radius: 5px; outline: none; flex: 1;">
+
+        <div class="input-group">
+            <select id="sortOrder" style="flex: 1;">
                 <option value="desc">Highest Priority First</option>
                 <option value="asc">Lowest Priority First</option>
             </select>
+
             <button onclick="sortTasks()" style="background-color: #4a4e69;">Sort</button>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 10px;">
-    <div id="taskList" style="flex: 1; text-align: left;">
-        
-        <p> </p>
-        <p> </p>
-        
+        <ul id="taskList"></ul>
     </div>
 
+    <!--  JavaScript now inside HTML -->
+    <script>
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const priorityInput = document.getElementById('priorityInput');
+            const dueDateInput = document.getElementById('dueDateInput');
+            const list = document.getElementById('taskList');
 
-         <div class="input-group" style="display: flex; justify-content: flex-end; width: 100%;">
-           <button onclick="deleteTasks()" style="background-color: #ff4d4d; padding: 10px 8px; scroll-margin-left: 8px;">
-             Delete</button>
-            <ul id="taskList"></ul>
-    </div>
+            const taskValue = input.value.trim();
+            const priorityValue = priorityInput.value;
+            const dueDateValue = dueDateInput.value;
 
-<script src="script.js"></script>
+            if (taskValue !== "") {
+                const li = document.createElement('li');
+
+                let badgeClass = '';
+                if (priorityValue === 'high') badgeClass = 'priority-high';
+                else if (priorityValue === 'medium') badgeClass = 'priority-medium';
+                else badgeClass = 'priority-low';
+
+                li.innerHTML = `
+                    <span class="task-text">${taskValue}</span>
+                    <span class="priority-badge ${badgeClass}">
+                        ${priorityValue.charAt(0).toUpperCase() + priorityValue.slice(1)}
+                    </span>
+                    <span class="due-date">
+                        ${dueDateValue ? 'Due: ' + dueDateValue : 'No due date'}
+                    </span>
+                `;
+
+                list.appendChild(li);
+
+                checkDueDates();
+
+                input.value = "";
+                priorityInput.value = "medium";
+                dueDateInput.value = "";
+            } else {
+                alert("Please enter a task!");
+            }
+        }
+
+        function searchTasks() {
+            let filter = document.getElementById('searchInput').value.toLowerCase();
+            let tasks = document.querySelectorAll('#taskList li');
+
+            tasks.forEach(task => {
+                let text = task.innerText.toLowerCase();
+                task.style.display = text.includes(filter) ? "" : "none";
+            });
+        }
+
+        function sortTasks() {
+            const list = document.getElementById('taskList');
+            const tasks = Array.from(list.children);
+            const sortOrder = document.getElementById('sortOrder').value;
+
+            const weights = { high: 3, medium: 2, low: 1 };
+
+            tasks.sort((a, b) => {
+                const A = a.querySelector('.priority-badge').innerText.toLowerCase();
+                const B = b.querySelector('.priority-badge').innerText.toLowerCase();
+
+                return sortOrder === 'desc' ? weights[B] - weights[A] : weights[A] - weights[B];
+            });
+
+            tasks.forEach(task => list.appendChild(task));
+        }
+
+        function checkDueDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const tasks = document.querySelectorAll('#taskList li');
+
+            tasks.forEach(task => {
+                const dueDateElement = task.querySelector('.due-date');
+
+                task.classList.remove('overdue', 'due-today');
+
+                if (dueDateElement) {
+                    const text = dueDateElement.innerText;
+
+                    if (text.startsWith('Due: ')) {
+                        const dueDate = text.replace('Due: ', '').trim();
+
+                        if (dueDate < today) {
+                            task.classList.add('overdue');
+                        } else if (dueDate === today) {
+                            task.classList.add('due-today');
+                        }
+                    }
+                }
+            });
+        }
+
+        setInterval(checkDueDates, 60000);
+    </script>
 </body>
 </html>
