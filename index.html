@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ZCAS Group Task Manager</title>
+    <title>ZCAS Group Task Manager </title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -66,7 +66,7 @@
 <body>
     <div class="container">
         <h2>ZCAS Smart Tasks</h2>
-        
+    
         <div class="input-group">
             <input type="text" id="searchInput" onkeyup="searchTasks()" placeholder="Search tasks...">
         </div>
@@ -79,17 +79,32 @@
                 <option value="low">Low</option>
             </select>
             <button onclick="addTask()">Add</button>
+            
         </div>
-
+       
         <div class="input-group" style="margin-top: 5px;">
-            <select id="sortOrder" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none; flex: 1;">
+            <select id="sortOrder" style="border-radius: 5px;; border: 1px solid #ddd; border-radius: 5px; outline: none; flex: 1;">
                 <option value="desc">Highest Priority First</option>
                 <option value="asc">Lowest Priority First</option>
             </select>
             <button onclick="sortTasks()" style="background-color: #4a4e69;">Sort</button>
         </div>
-        <ul id="taskList"></ul>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 10px;">
+    <div id="taskList" style="flex: 1; text-align: left;">
+        
+        <p> </p>
+        <p> </p>
+        
     </div>
-    <script src="script.js"></script>
+
+
+         <div class="input-group" style="display: flex; justify-content: flex-end; width: 100%;">
+           <button onclick="deleteTasks()" style="background-color: #ff4d4d; padding: 10px 8px; scroll-margin-left: 8px;">
+             Delete</button>
+            <ul id="taskList"></ul>
+    </div>
+
+<script src="script.js"></script>
 </body>
 </html>

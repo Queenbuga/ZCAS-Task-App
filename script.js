@@ -76,3 +76,15 @@ function sortTasks() {
     // Re-append the sorted tasks back to the list
     tasks.forEach(task => list.appendChild(task));
 }
+function deleteTasks() {
+    const list = document.getElementById('taskList');
+
+    if (list.children.length === 0) {
+        alert("No tasks to delete.");
+        return;
+    }
+
+    if (confirm("Are you sure you want to delete all tasks?")) {
+        list.innerHTML = "";
+    }
+}
