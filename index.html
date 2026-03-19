@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ZCAS Group Task Manager </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZCAS Group Task Manager</title>
+
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -113,7 +115,7 @@
 <body>
     <div class="container">
         <h2>ZCAS Smart Tasks</h2>
-    
+        
         <div class="input-group">
             <input type="text" id="searchInput" onkeyup="searchTasks()" placeholder="Search tasks...">
         </div>
@@ -130,7 +132,6 @@
             <input type="date" id="dueDateInput">
 
             <button onclick="addTask()">Add</button>
-            
         </div>
 
         <div class="input-group">
@@ -145,7 +146,7 @@
         <ul id="taskList"></ul>
     </div>
 
-    <!--  JavaScript now inside HTML -->
+    <!-- ✅ JavaScript now inside HTML -->
     <script>
         function addTask() {
             const input = document.getElementById('taskInput');
